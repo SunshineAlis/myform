@@ -2,18 +2,21 @@
 
 import { useState, useEffect } from "react";
 
-
 export const StepThree = ({ setStep }) => {
   const [formValue, setFormValue] = useState(() => {
     // Load form data from localStorage if it exists
     const savedData = localStorage.getItem("stepThreeForm");
-    return savedData ? JSON.parse(savedData) : { dateOfBirth: "", profileImage: null };
+    return savedData
+      ? JSON.parse(savedData)
+      : { dateOfBirth: "", profileImage: null };
   });
 
   const [errors, setErrors] = useState({
     dateOfBirth: "",
     profileImage: "",
   });
+
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     // Save form data to localStorage
@@ -31,6 +34,13 @@ export const StepThree = ({ setStep }) => {
         ...prev,
         profileImage: "",
       }));
+
+      // Set preview image
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -60,8 +70,8 @@ export const StepThree = ({ setStep }) => {
   };
 
   return (
-    <div className="w-[100%] w-[480px] h-[655px] flex flex-col mt-[100px] ml-[300px] gap-[30px] bg-white border rounded-xl p-8">
-     <img src="/Pinecone.png" alt="Example" width={60} height={60} />
+    <div className="w-[100%] max-w-[480px] h-[655px] flex flex-col mt-[100px] ml-[300px] gap-[30px] bg-white border rounded-xl p-8">
+      <img src="/Pinecone.png" alt="Example" width={60} height={60} />
       <h1 className="font-semibold text-2xl">Join Us! 😎</h1>
       <h3 className="text-lg font-normal text-[#8E8E8E]">
         Please provide all current information accurately.
@@ -84,7 +94,9 @@ export const StepThree = ({ setStep }) => {
           }
           value={formValue.dateOfBirth}
         />
-        {errors.dateOfBirth && <p className="text-red-500">{errors.dateOfBirth}</p>}
+        {errors.dateOfBirth && (
+          <p className="text-red-500">{errors.dateOfBirth}</p>
+        )}
       </div>
 
       {/* Profile Image Field */}
@@ -92,24 +104,37 @@ export const StepThree = ({ setStep }) => {
         <label>
           Profile Image<span className="text-red">*</span>
         </label>
-        <div className="border py-20 px-4 rounded-xl flex justify-center items-center bg-gray-100">
+        <div className="border py-4 px-4 rounded-xl flex flex-col items-center bg-gray-100">
+          {previewImage ? (
+            <img
+              src={previewImage}
+              alt="Preview"
+              className="w-32 h-32 object-cover rounded-full mb-2"
+            />
+          ) : (
+            <div className="w-32 h-32 flex items-center justify-center bg-gray-200 rounded-full mb-2">
+              <span className="text-gray-500">No image</span>
+            </div>
+          )}
           <input
             id="profileImage"
-            type="image"
+            type="file"
             accept="image/*"
             className="hidden"
             onChange={handleFileChange}
           />
           <label
             htmlFor="profileImage"
-            className="cursor-pointer text-center text-gray-500"
+            className="cursor-pointer text-gray-500 border px-4 py-2 rounded-lg bg-white"
           >
             {formValue.profileImage
-              ? formValue.profileImage.name
-              : "Add image"}
+              ? "Change Image"
+              : "Add Image"}
           </label>
         </div>
-        {errors.profileImage && <p className="text-red-500">{errors.profileImage}</p>}
+        {errors.profileImage && (
+          <p className="text-red-500">{errors.profileImage}</p>
+        )}
       </div>
 
       {/* Navigation Buttons */}
