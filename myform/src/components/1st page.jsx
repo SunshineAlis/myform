@@ -13,16 +13,20 @@ export const StepOne = ({ setStep }) => {
   };
 
   const [formValue, setFormValue] = useState(() => {
-    // Restore form data from localStorage
-    const savedFormValue = localStorage.getItem("stepOneForm");
-    return savedFormValue ? JSON.parse(savedFormValue) : initialState;
+    if (typeof window !== "undefined") { // Браузер дээр ажиллаж байвал
+      const savedFormValue = localStorage.getItem("stepOneForm");
+      return savedFormValue ? JSON.parse(savedFormValue) : initialState;
+    }
+    return initialState; // Сервер талд байх үед default утга буцаах
   });
 
   const [errors, setErrors] = useState(initialState);
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("stepOneForm", JSON.stringify(formValue));
+    if (typeof window !== "undefined") { // Браузер дээр ажиллах
+      localStorage.setItem("stepOneForm", JSON.stringify(formValue));
+    }
   }, [formValue]);
 
   const onSubmit = () => {
@@ -120,3 +124,4 @@ export const StepOne = ({ setStep }) => {
     </motion.div>
   );
 };
+

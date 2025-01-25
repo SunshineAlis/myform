@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect,  } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 
 export const StepFour = ({ setStep }) => {
   useEffect(() => {
-    // Save current step in localStorage to persist progress
+    // Save the current step in localStorage to persist progress
     localStorage.setItem("currentStep", 4);
   }, []);
 
@@ -51,6 +51,6 @@ export const StepFour = ({ setStep }) => {
           Home
         </button>
       </div>
-      </motion.div>
+    </motion.div>
   );
 };

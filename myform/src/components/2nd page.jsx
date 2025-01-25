@@ -1,12 +1,11 @@
-"use client";
+"use client"; // Тайлбар, зөвхөн клиент талд ажиллах болно
 
 import { useState, useEffect } from "react";
-import {Input} from "./Input"
+import { Input } from "./Input";
 import { motion } from "framer-motion";
 import { CardHeader } from "./CardHeader";
 
 export const StepTwo = ({ setStep }) => {
-  // Initial state
   const initialState = {
     email: "",
     phone: "",
@@ -14,10 +13,13 @@ export const StepTwo = ({ setStep }) => {
     confirmPassword: "",
   };
 
+  // Client-side - localStorage-г ашиглах
   const [formValue, setFormValue] = useState(() => {
-    // LocalStorage-оос өгөгдөл сэргээх
-    const savedFormValue = localStorage.getItem("stepTwoForm");
-    return savedFormValue ? JSON.parse(savedFormValue) : initialState;
+    if (typeof window !== "undefined") { // Браузер дээр ажиллаж байвал
+      const savedFormValue = localStorage.getItem("stepTwoForm");
+      return savedFormValue ? JSON.parse(savedFormValue) : initialState;
+    }
+    return initialState; // Сервер талд default утга буцаах
   });
 
   const [errors, setErrors] = useState({
@@ -28,8 +30,10 @@ export const StepTwo = ({ setStep }) => {
   });
 
   useEffect(() => {
-    // Form-ийн утгыг LocalStorage-д хадгалах
-    localStorage.setItem("stepTwoForm", JSON.stringify(formValue));
+    // client-side дээрх localStorage-г хадгалах
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stepTwoForm", JSON.stringify(formValue));
+    }
   }, [formValue]);
 
   const validateEmail = (email) => {
@@ -43,7 +47,7 @@ export const StepTwo = ({ setStep }) => {
   };
 
   const validatePassword = (password) => {
-    return password.length >= 8; // 
+    return password.length >= 8; // Password 8 тэмдэгтээс их байх ёстой
   };
 
   const onSubmit = (e) => {
@@ -80,7 +84,7 @@ export const StepTwo = ({ setStep }) => {
       return;
     }
 
-    // next
+    // Дараагийн алхам руу шилжих
     setStep((prevStep) => prevStep + 1);
   };
 
@@ -98,12 +102,12 @@ export const StepTwo = ({ setStep }) => {
 
   return (
     <motion.div
-    initial={{ opacity: 0, x: -50 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.9 }}
-    className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
-  >
-     <CardHeader/>
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.9 }}
+      className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
+    >
+      <CardHeader />
       <Input
         id="email"
         label="Email"
@@ -112,8 +116,7 @@ export const StepTwo = ({ setStep }) => {
         onChange={handleChange}
         error={errors.email}
       />
-
-<Input
+      <Input
         id="phone"
         label="Phone number"
         placeholder="Enter your phone number"
@@ -121,7 +124,7 @@ export const StepTwo = ({ setStep }) => {
         onChange={handleChange}
         error={errors.phone}
       />
-   <Input
+      <Input
         id="password"
         label="Password"
         type="password"
@@ -139,7 +142,6 @@ export const StepTwo = ({ setStep }) => {
         onChange={handleChange}
         error={errors.confirmPassword}
       />
-     
       <div className="flex gap-[10px]">
         <button
           className="w-[150px] h-[60px] bg-gray-200 border rounded-xl text-gray-700 text-xl"
@@ -154,6 +156,6 @@ export const StepTwo = ({ setStep }) => {
           Continue 2/3
         </button>
       </div>
-      </motion.div>
+    </motion.div>
   );
 };
