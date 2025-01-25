@@ -1,5 +1,7 @@
 import * as React from "react"
-const Pinecone = (props) => (
+
+const Pinecone = (props) => {
+    return (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -8,18 +10,6 @@ const Pinecone = (props) => (
     fill="none"
     {...props}
   >
-    <path fill="#1E1E1E" d="M0 0h60v60H0z" />
-    <path
-      fill="#131313"
-      d="M-2092-312c0-1.105.9-2 2-2h4596c1.1 0 2 .895 2 2V908c0 1.104-.9 2-2 2h-4596c-1.1 0-2-.895-2-2V-312Z"
-    />
-    <path
-      fill="#fff"
-      fillOpacity={0.1}
-      d="M-2090-313h4596v-2h-4596v2Zm4597 1V908h2V-312h-2Zm-1 1221h-4596v2h4596v-2Zm-4597-1V-312h-2V908h2Zm1 1c-.55 0-1-.448-1-1h-2c0 1.657 1.34 3 3 3v-2Zm4597-1c0 .552-.45 1-1 1v2c1.66 0 3-1.343 3-3h-2Zm-1-1221c.55 0 1 .448 1 1h2c0-1.657-1.34-3-3-3v2Zm-4596-2c-1.66 0-3 1.343-3 3h2c0-.552.45-1 1-1v-2Z"
-    />
-    <path fill="#F4F4F4" d="M-512-214H928V810H-512z" />
-    <rect width={480} height={739} x={-32} y={-32} fill="#fff" rx={8} />
     <path fill="url(#a)" d="M0 0h60v60H0z" />
     <defs>
       <pattern
@@ -39,4 +29,5 @@ const Pinecone = (props) => (
     </defs>
   </svg>
 )
+}
 export default Pinecone
