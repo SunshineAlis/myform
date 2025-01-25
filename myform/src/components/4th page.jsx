@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect,  } from "react";
+import { motion } from "framer-motion";
 
 export const StepFour = ({ setStep }) => {
   useEffect(() => {
@@ -21,7 +22,12 @@ export const StepFour = ({ setStep }) => {
   };
 
   return (
-    <div className="w-[100%] w-[480px] h-[655px] flex flex-col mt-[100px] ml-[300px] gap-[30px] bg-white border rounded-xl p-8">
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.9 }}
+      className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
+    >
       <img src="/Pinecone.png" alt="Example" width={60} height={60} />
       <h1 className="font-semibold text-2xl">You're All Set 🔥</h1>
       <h3 className="text-lg font-normal text-[#8E8E8E]">
@@ -45,6 +51,6 @@ export const StepFour = ({ setStep }) => {
           Home
         </button>
       </div>
-    </div>
+      </motion.div>
   );
 };

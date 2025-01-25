@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { CardHeader } from "./CardHeader";
 
 export const StepThree = ({ setStep }) => {
   const [formValue, setFormValue] = useState(() => {
-    // Load form data from localStorage if it exists
     const savedData = localStorage.getItem("stepThreeForm");
     return savedData
       ? JSON.parse(savedData)
@@ -16,19 +17,25 @@ export const StepThree = ({ setStep }) => {
     profileImage: "",
   });
 
-  const [previewImage, setPreviewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(() => {
+    const savedData = localStorage.getItem("stepThreeForm");
+    return savedData ? JSON.parse(savedData).previewImage : null;
+  });
 
   useEffect(() => {
-    // Save form data to localStorage
-    localStorage.setItem("stepThreeForm", JSON.stringify(formValue));
-  }, [formValue]);
+    // Save form data and preview image to localStorage
+    localStorage.setItem(
+      "stepThreeForm",
+      JSON.stringify({ ...formValue, previewImage })
+    );
+  }, [formValue, previewImage]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFormValue((prev) => ({
         ...prev,
-        profileImage: file,
+        profileImage: file.name, // Save file name for reference
       }));
       setErrors((prev) => ({
         ...prev,
@@ -70,12 +77,13 @@ export const StepThree = ({ setStep }) => {
   };
 
   return (
-    <div className="w-[100%] max-w-[480px] h-[655px] flex flex-col mt-[100px] ml-[300px] gap-[30px] bg-white border rounded-xl p-8">
-      <img src="/Pinecone.png" alt="Example" width={60} height={60} />
-      <h1 className="font-semibold text-2xl">Join Us! 😎</h1>
-      <h3 className="text-lg font-normal text-[#8E8E8E]">
-        Please provide all current information accurately.
-      </h3>
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.9 }}
+      className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
+    >
+    <CardHeader/>
 
       {/* Date of Birth Field */}
       <div className="flex flex-col">
@@ -112,8 +120,8 @@ export const StepThree = ({ setStep }) => {
               className="w-32 h-32 object-cover rounded-full mb-2"
             />
           ) : (
-            <div className="w-32 h-32 flex items-center justify-center bg-gray-200 rounded-full mb-2">
-              <span className="text-gray-500">No image</span>
+            <div className="w-32 h-32 flex items-center justify-center bg-gray-200 rounded-lg mb-2">
+              <span className="text-gray-500">Add image</span>
             </div>
           )}
           <input
@@ -127,9 +135,7 @@ export const StepThree = ({ setStep }) => {
             htmlFor="profileImage"
             className="cursor-pointer text-gray-500 border px-4 py-2 rounded-lg bg-white"
           >
-            {formValue.profileImage
-              ? "Change Image"
-              : "Add Image"}
+            {formValue.profileImage ? "Change Image" : "Add Image"}
           </label>
         </div>
         {errors.profileImage && (
@@ -155,6 +161,6 @@ export const StepThree = ({ setStep }) => {
           Submit 3/3
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };

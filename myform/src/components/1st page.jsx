@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
+import { motion } from "framer-motion";
+import { Input } from "./Input";
+import { CardHeader } from "./CardHeader";
 
 export const StepOne = ({ setStep }) => {
   const initialState = {
@@ -16,11 +18,7 @@ export const StepOne = ({ setStep }) => {
     return savedFormValue ? JSON.parse(savedFormValue) : initialState;
   });
 
-  const [errors, setErrors] = useState({
-    firstName: "",
-    secondName: "",
-    userName: "",
-  });
+  const [errors, setErrors] = useState(initialState);
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
@@ -28,23 +26,23 @@ export const StepOne = ({ setStep }) => {
   }, [formValue]);
 
   const onSubmit = () => {
-    let hasError = false;
     const newErrors = {};
+    let hasError = false;
 
     // First name validation
-    if (!formValue.firstName || formValue.firstName.trim().length === 0) {
+    if (!formValue.firstName.trim()) {
       newErrors.firstName = "Please enter your first name";
       hasError = true;
     }
 
     // Last name validation
-    if (!formValue.secondName || formValue.secondName.trim().length === 0) {
+    if (!formValue.secondName.trim()) {
       newErrors.secondName = "Please enter your last name";
       hasError = true;
     }
 
     // User name validation
-    if (!formValue.userName || formValue.userName.trim().length === 0) {
+    if (!formValue.userName.trim()) {
       newErrors.userName = "Please enter your user name";
       hasError = true;
     }
@@ -72,70 +70,53 @@ export const StepOne = ({ setStep }) => {
   };
 
   return (
-    <div className="w-[100%] w-[480px] h-[655px] flex flex-col mt-[100px] ml-[300px] gap-[30px] bg-white border rounded-xl p-8">
-   <img src="/Pinecone.png" alt="Example" width={60} height={60} />
-      <h1 className="font-semibold text-2xl">Join Us! 😎</h1>
-      <h3 className="text-lg font-normal text-[#8E8E8E]">
-        Please provide all current information accurately
-      </h3>
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.9 }}
+      className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
+    >
 
+      <CardHeader/>
       {/* First Name Field */}
-      <div className="flex flex-col">
-        <label>
-          First name<span className="text-red">*</span>
-        </label>
-        <input
-          id="firstName"
-          type="text"
-          placeholder="Enter your first name"
-          className="w-full border py-3 px-2 rounded-xl"
-          onChange={handleChange}
-          value={formValue.firstName}
-        />
-        {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
-      </div>
+      <Input
+        id="firstName"
+        label="First Name"
+        placeholder="Enter your first name"
+        value={formValue.firstName}
+        onChange={handleChange}
+        error={errors.firstName}
+      />
 
       {/* Last Name Field */}
-      <div className="flex flex-col">
-        <label>
-          Last name<span className="text-red">*</span>
-        </label>
-        <input
-          id="secondName"
-          type="text"
-          placeholder="Enter your last name"
-          className="w-full border py-3 px-2 rounded-xl"
-          onChange={handleChange}
-          value={formValue.secondName}
-        />
-        {errors.secondName && <p className="text-red-500">{errors.secondName}</p>}
-      </div>
+      <Input
+        id="secondName"
+        label="Last Name"
+        placeholder="Enter your last name"
+        value={formValue.secondName}
+        onChange={handleChange}
+        error={errors.secondName}
+      />
 
       {/* User Name Field */}
-      <div className="flex flex-col">
-        <label>
-          User Name<span className="text-red">*</span>
-        </label>
-        <input
-          id="userName"
-          type="text"
-          placeholder="Enter your user name"
-          className="w-full border py-3 px-2 rounded-xl"
-          onChange={handleChange}
-          value={formValue.userName}
-        />
-        {errors.userName && <p className="text-red-500">{errors.userName}</p>}
-      </div>
+      <Input
+        id="userName"
+        label="User Name"
+        placeholder="Enter your user name"
+        value={formValue.userName}
+        onChange={handleChange}
+        error={errors.userName}
+      />
 
       {/* Submit Button */}
       <div>
         <button
           onClick={onSubmit}
-          className="w-full h-[60px] mt-[70px] mb-[50px] bg-black text-white text-2xl rounded-2xl"
+          className="w-full h-14 bg-black text-white text-xl rounded-xl hover:bg-gray-800 transition"
         >
           Continue 1/3
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };

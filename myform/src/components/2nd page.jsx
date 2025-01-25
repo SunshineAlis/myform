@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
+import {Input} from "./Input"
+import { motion } from "framer-motion";
+import { CardHeader } from "./CardHeader";
 
 export const StepTwo = ({ setStep }) => {
   // Initial state
@@ -95,70 +97,49 @@ export const StepTwo = ({ setStep }) => {
   };
 
   return (
-    <div className="w-[480px] h-[655px] flex flex-col mt-[100px] ml-[300px] gap-[30px] bg-white border rounded-xl p-8">
-      <img src="/Pinecone.png" alt="Example" width={60} height={60} />
-      <h1 className="font-semibold text-xl">Join Us! 😎</h1>
-      <h3 className="text-lg font-normal text-[#8E8E8E]">
-        Please provide all current information accurately.
-      </h3>
-      <div className="flex flex-col">
-        <label>
-          Email<span className="text-red">*</span>
-        </label>
-        <input
-          id="email"
-          type="text"
-          placeholder="Email"
-          value={formValue.email}
-          onChange={handleChange}
-          className="w-full border py-3 px-2 rounded-xl"
-        />
-        {errors.email && <p className="text-red-500">{errors.email}</p>}
-      </div>
-      <div className="flex flex-col">
-        <label>
-          Phone Number <span className="text-red">*</span>
-        </label>
-        <input
-          id="phone"
-          type="text"
-          placeholder="Phone Number"
-          value={formValue.phone}
-          onChange={handleChange}
-          className="w-full border py-3 px-2 rounded-xl"
-        />
-        {errors.phone && <p className="text-red-500">{errors.phone}</p>}
-      </div>
-      <div className="flex flex-col">
-        <label>
-          Password<span>*</span>
-        </label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Password"
-          value={formValue.password}
-          onChange={handleChange}
-          className="w-full border py-3 px-2 rounded-xl"
-        />
-        {errors.password && <p className="text-red-500">{errors.password}</p>}
-      </div>
-      <div className="flex flex-col">
-        <label>
-          Confirm Password<span>*</span>
-        </label>
-        <input
-          id="confirmPassword"
-          type="password"
-          placeholder="Confirm Password"
-          value={formValue.confirmPassword}
-          onChange={handleChange}
-          className="w-full border py-3 px-2 rounded-xl"
-        />
-        {errors.confirmPassword && (
-          <p className="text-red-500">{errors.confirmPassword}</p>
-        )}
-      </div>
+    <motion.div
+    initial={{ opacity: 0, x: -50 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.9 }}
+    className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
+  >
+     <CardHeader/>
+      <Input
+        id="email"
+        label="Email"
+        placeholder="Enter your email"
+        value={formValue.email}
+        onChange={handleChange}
+        error={errors.email}
+      />
+
+<Input
+        id="phone"
+        label="Phone number"
+        placeholder="Enter your phone number"
+        value={formValue.phone}
+        onChange={handleChange}
+        error={errors.phone}
+      />
+   <Input
+        id="password"
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        value={formValue.password}
+        onChange={handleChange}
+        error={errors.password}
+      />
+      <Input
+        id="confirmPassword"
+        label=" Confirm Password"
+        type="password"
+        placeholder="Enter your password"
+        value={formValue.confirmPassword}
+        onChange={handleChange}
+        error={errors.confirmPassword}
+      />
+     
       <div className="flex gap-[10px]">
         <button
           className="w-[150px] h-[60px] bg-gray-200 border rounded-xl text-gray-700 text-xl"
@@ -173,6 +154,6 @@ export const StepTwo = ({ setStep }) => {
           Continue 2/3
         </button>
       </div>
-    </div>
+      </motion.div>
   );
 };
