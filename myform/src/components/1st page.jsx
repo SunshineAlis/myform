@@ -14,19 +14,16 @@ export const StepOne = ({ setStep }) => {
 
   const [formValue, setFormValue] = useState(() => {
     if (typeof window !== "undefined") {
-      // Браузер дээр ажиллаж байвал
       const savedFormValue = localStorage.getItem("stepOneForm");
       return savedFormValue ? JSON.parse(savedFormValue) : initialState;
     }
-    return initialState; // Сервер талд байх үед default утга буцаах
+    return initialState; //
   });
 
   const [errors, setErrors] = useState(initialState);
 
-  // Save form data to localStorage whenever it changes
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Браузер дээр ажиллах
       localStorage.setItem("stepOneForm", JSON.stringify(formValue));
     }
   }, [formValue]);
@@ -35,25 +32,21 @@ export const StepOne = ({ setStep }) => {
     const newErrors = {};
     let hasError = false;
 
-    // First name validation
     if (!formValue.firstName.trim()) {
       newErrors.firstName = "Please enter your first name";
       hasError = true;
     }
 
-    // Last name validation
     if (!formValue.secondName.trim()) {
       newErrors.secondName = "Please enter your last name";
       hasError = true;
     }
 
-    // User name validation
     if (!formValue.userName.trim()) {
       newErrors.userName = "Please enter your user name";
       hasError = true;
     }
 
-    // Set errors if validation fails
     if (hasError) {
       setErrors(newErrors);
       return;
@@ -83,7 +76,7 @@ export const StepOne = ({ setStep }) => {
       className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
     >
       <CardHeader />
-      {/* First Name Field */}
+
       <Input
         id="firstName"
         label="First Name"
@@ -93,7 +86,6 @@ export const StepOne = ({ setStep }) => {
         error={errors.firstName}
       />
 
-      {/* Last Name Field */}
       <Input
         id="secondName"
         label="Last Name"
@@ -103,7 +95,6 @@ export const StepOne = ({ setStep }) => {
         error={errors.secondName}
       />
 
-      {/* User Name Field */}
       <Input
         id="userName"
         label="User Name"
@@ -113,7 +104,6 @@ export const StepOne = ({ setStep }) => {
         error={errors.userName}
       />
 
-      {/* Submit Button */}
       <div>
         <button
           onClick={onSubmit}

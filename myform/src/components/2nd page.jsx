@@ -11,13 +11,18 @@ export const StepTwo = ({ setStep }) => {
     confirmPassword: "",
   };
 
-  // Хэрвээ localStorage-оос өмнөх өгөгдлийг хадгалсан бол авах
+  //
   const [formValue, setFormValue] = useState(() => {
     if (typeof window !== "undefined") {
       const savedFormValue = localStorage.getItem("stepTwoForm");
-      return savedFormValue ? JSON.parse(savedFormValue) : initialState;
+      try {
+        return savedFormValue ? JSON.parse(savedFormValue) : initialState;
+      } catch (error) {
+        console.error("Error parsing saved form data:", error);
+        return initialState;
+      }
     }
-    return initialState; // initialState болдог
+    return initialState; //
   });
 
   const [errors, setErrors] = useState({
@@ -27,28 +32,24 @@ export const StepTwo = ({ setStep }) => {
     confirmPassword: "",
   });
 
-  // formValue өөрчлөгдөхөд localStorage руу хадгалах
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("stepTwoForm", JSON.stringify(formValue));
     }
   }, [formValue]);
 
-  // Эмейл баталгаажуулалт
   const validateEmail = (email) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(email);
   };
 
-  // Утасны дугаарын баталгаажуулалт
   const validatePhone = (phone) => {
-    const re = /^[0-9]{8,12}$/; // 8-12 орон
+    const re = /^[0-9]{8,12}$/; //
     return re.test(phone);
   };
 
-  // Нууц үгийн баталгаажуулалт
   const validatePassword = (password) => {
-    return password.length >= 8; // 8-с дээш тэмдэгт
+    return password.length >= 8; //
   };
 
   const onSubmit = (e) => {
@@ -56,25 +57,21 @@ export const StepTwo = ({ setStep }) => {
     let hasError = false;
     const newErrors = {};
 
-    // Email validation
     if (!validateEmail(formValue.email)) {
       hasError = true;
       newErrors.email = "Invalid email address";
     }
 
-    // Phone validation
     if (!validatePhone(formValue.phone)) {
       hasError = true;
       newErrors.phone = "Phone number must be 8-12 digits";
     }
 
-    // Password validation
     if (!validatePassword(formValue.password)) {
       hasError = true;
       newErrors.password = "Password must be at least 8 characters";
     }
 
-    // Confirm password validation
     if (formValue.password !== formValue.confirmPassword) {
       hasError = true;
       newErrors.confirmPassword = "Passwords do not match";
@@ -85,11 +82,9 @@ export const StepTwo = ({ setStep }) => {
       return;
     }
 
-    // Next step
     setStep((prevStep) => prevStep + 1);
   };
 
-  // Форма дээрх оролт өөрчлөгдсөн үед утга хадгалах
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormValue((prev) => ({

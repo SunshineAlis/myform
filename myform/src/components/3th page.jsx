@@ -5,15 +5,7 @@ import { motion } from "framer-motion";
 import { CardHeader } from "./CardHeader";
 
 export const StepThree = ({ setStep }) => {
-  const [formValue, setFormValue] = useState(() => {
-    if (typeof window !== "undefined") {
-      const savedData = localStorage.getItem("stepThreeForm");
-      return JSON.parse(savedData) || { dateOfBirth: "", profileImage: null };
-      // ? JSON.parse(savedData)
-      // : { dateOfBirth: "", profileImage: null };
-    }
-    return { dateOfBirth: "", profileImage: null }; // Fallback for SSR
-  });
+  const [formValue, setFormValue] = useState({});
 
   const [errors, setErrors] = useState({
     dateOfBirth: "",
@@ -22,39 +14,37 @@ export const StepThree = ({ setStep }) => {
 
   const [previewImage, setPreviewImage] = useState(null);
 
-  // `useEffect` ашиглан `localStorage` хадгалах
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedData = localStorage.getItem("stepThreeForm");
       if (savedData) {
         setPreviewImage(JSON.parse(savedData).previewImage);
+        setFormValue(JSON.parse(savedData) || {});
       }
     }
-  }, []); // On component mount
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // Save form value and preview image to localStorage
       localStorage.setItem(
         "stepThreeForm",
         JSON.stringify({ ...formValue, previewImage })
       );
     }
-  }, [formValue, previewImage]); // Triggered when formValue or previewImage changes
+  }, [formValue, previewImage]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFormValue((prev) => ({
         ...prev,
-        profileImage: file.name, // Set the file name for profileImage
+        profileImage: file.name,
       }));
       setErrors((prev) => ({
         ...prev,
         profileImage: "",
       }));
 
-      // Preview the image
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewImage(reader.result);
@@ -67,13 +57,11 @@ export const StepThree = ({ setStep }) => {
     let hasError = false;
     const newErrors = {};
 
-    // Validate Date of Birth
     if (!formValue.dateOfBirth) {
       hasError = true;
       newErrors.dateOfBirth = "Please select a date.";
     }
 
-    // Validate Profile Image
     if (!formValue.profileImage) {
       hasError = true;
       newErrors.profileImage = "Image cannot be blank.";
@@ -84,7 +72,6 @@ export const StepThree = ({ setStep }) => {
       return;
     }
 
-    // Proceed to the next step
     setStep(4); // Move to Step 4
   };
 
@@ -112,7 +99,7 @@ export const StepThree = ({ setStep }) => {
               dateOfBirth: e.target.value,
             }))
           }
-          value={formValue.dateOfBirth}
+          value={formValue?.dateOfBirth || new Date()}
         />
         {errors.dateOfBirth && (
           <p className="text-red-500">{errors.dateOfBirth}</p>
