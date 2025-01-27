@@ -13,7 +13,8 @@ export const StepOne = ({ setStep }) => {
   };
 
   const [formValue, setFormValue] = useState(() => {
-    if (typeof window !== "undefined") { // Браузер дээр ажиллаж байвал
+    if (typeof window !== "undefined") {
+      // Браузер дээр ажиллаж байвал
       const savedFormValue = localStorage.getItem("stepOneForm");
       return savedFormValue ? JSON.parse(savedFormValue) : initialState;
     }
@@ -24,7 +25,8 @@ export const StepOne = ({ setStep }) => {
 
   // Save form data to localStorage whenever it changes
   useEffect(() => {
-    if (typeof window !== "undefined") { // Браузер дээр ажиллах
+    if (typeof window !== "undefined") {
+      // Браузер дээр ажиллах
       localStorage.setItem("stepOneForm", JSON.stringify(formValue));
     }
   }, [formValue]);
@@ -80,8 +82,7 @@ export const StepOne = ({ setStep }) => {
       transition={{ duration: 0.9 }}
       className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
     >
-
-      <CardHeader/>
+      <CardHeader />
       {/* First Name Field */}
       <Input
         id="firstName"
@@ -124,4 +125,3 @@ export const StepOne = ({ setStep }) => {
     </motion.div>
   );
 };
-

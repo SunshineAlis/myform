@@ -8,9 +8,9 @@ export const StepThree = ({ setStep }) => {
   const [formValue, setFormValue] = useState(() => {
     if (typeof window !== "undefined") {
       const savedData = localStorage.getItem("stepThreeForm");
-      return savedData
-        ? JSON.parse(savedData)
-        : { dateOfBirth: "", profileImage: null };
+      return JSON.parse(savedData) || { dateOfBirth: "", profileImage: null };
+      // ? JSON.parse(savedData)
+      // : { dateOfBirth: "", profileImage: null };
     }
     return { dateOfBirth: "", profileImage: null }; // Fallback for SSR
   });
