@@ -6,20 +6,19 @@ import { CardHeader } from "./CardHeader";
 
 export const StepThree = ({ setStep }) => {
   const [formValue, setFormValue] = useState({});
-
   const [errors, setErrors] = useState({
     dateOfBirth: "",
     profileImage: "",
   });
-
   const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedData = localStorage.getItem("stepThreeForm");
       if (savedData) {
-        setPreviewImage(JSON.parse(savedData).previewImage);
-        setFormValue(JSON.parse(savedData) || {});
+        const parsedData = JSON.parse(savedData);
+        setFormValue(parsedData.formValue || {});
+        setPreviewImage(parsedData.previewImage || null);
       }
     }
   }, []);
@@ -28,7 +27,7 @@ export const StepThree = ({ setStep }) => {
     if (typeof window !== "undefined") {
       localStorage.setItem(
         "stepThreeForm",
-        JSON.stringify({ ...formValue, previewImage })
+        JSON.stringify({ formValue, previewImage })
       );
     }
   }, [formValue, previewImage]);
@@ -47,9 +46,9 @@ export const StepThree = ({ setStep }) => {
 
       const reader = new FileReader();
       reader.onload = () => {
-        setPreviewImage(reader.result);
+        setPreviewImage(reader.result); //
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); //
     }
   };
 
@@ -72,7 +71,7 @@ export const StepThree = ({ setStep }) => {
       return;
     }
 
-    setStep(4); // Move to Step 4
+    setStep(4);
   };
 
   return (
@@ -83,8 +82,6 @@ export const StepThree = ({ setStep }) => {
       className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
     >
       <CardHeader />
-
-      {/* Date of Birth Field */}
       <div className="flex flex-col">
         <label>
           Date of Birth<span className="text-red">*</span>
@@ -99,14 +96,12 @@ export const StepThree = ({ setStep }) => {
               dateOfBirth: e.target.value,
             }))
           }
-          value={formValue?.dateOfBirth || new Date()}
+          value={formValue?.dateOfBirth || ""}
         />
         {errors.dateOfBirth && (
           <p className="text-red-500">{errors.dateOfBirth}</p>
         )}
       </div>
-
-      {/* Profile Image Field */}
       <div className="flex flex-col">
         <label>
           Profile Image<span className="text-red">*</span>
@@ -141,20 +136,15 @@ export const StepThree = ({ setStep }) => {
           <p className="text-red-500">{errors.profileImage}</p>
         )}
       </div>
-
-      {/* Navigation Buttons */}
       <div className="flex gap-[10px] mt-4 mb-4">
-        {/* Back Button */}
         <button
           className="w-[150px] h-[60px] bg-gray-200 border rounded-xl text-gray-700 text-xl"
           onClick={() => setStep((prevStep) => prevStep - 1)} // Go back to Step 2
         >
           Back
         </button>
-
-        {/* Submit Button */}
         <button
-          onClick={onSubmit} // Submit and proceed to Step 4
+          onClick={onSubmit} //
           className="w-[302px] h-[60px] bg-black text-white text-xl rounded-2xl"
         >
           Submit 3/3

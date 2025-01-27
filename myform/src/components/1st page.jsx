@@ -94,7 +94,6 @@ export const StepOne = ({ setStep }) => {
         onChange={handleChange}
         error={errors.secondName}
       />
-
       <Input
         id="userName"
         label="User Name"
