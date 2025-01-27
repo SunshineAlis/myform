@@ -5,36 +5,29 @@ import { motion } from "framer-motion";
 import { CardHeader } from "./CardHeader";
 
 export const StepThree = ({ setStep }) => {
-  const [formValue, setFormValue] = useState({
-    dateOfBirth: "",
-    profileImage: null,
+  const [formValue, setFormValue] = useState(() => {
+    const savedData = localStorage.getItem("stepThreeForm");
+    return savedData
+      ? JSON.parse(savedData)
+      : { dateOfBirth: "", profileImage: null };
   });
+
   const [errors, setErrors] = useState({
     dateOfBirth: "",
     profileImage: "",
   });
-  const [previewImage, setPreviewImage] = useState(null);
 
-  useEffect(() => {
-    // Check if we are in a browser environment before accessing localStorage
-    if (typeof window !== "undefined") {
-      const savedData = localStorage.getItem("stepThreeForm");
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        setFormValue(parsedData);
-        setPreviewImage(parsedData.previewImage);
-      }
-    }
-  }, []); // This effect will run only once on mount
+  const [previewImage, setPreviewImage] = useState(() => {
+    const savedData = localStorage.getItem("stepThreeForm");
+    return savedData ? JSON.parse(savedData).previewImage : null;
+  });
 
   useEffect(() => {
     // Save form data and preview image to localStorage
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        "stepThreeForm",
-        JSON.stringify({ ...formValue, previewImage })
-      );
-    }
+    localStorage.setItem(
+      "stepThreeForm",
+      JSON.stringify({ ...formValue, previewImage })
+    );
   }, [formValue, previewImage]);
 
   const handleFileChange = (e) => {
@@ -90,7 +83,7 @@ export const StepThree = ({ setStep }) => {
       transition={{ duration: 0.9 }}
       className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
     >
-      <CardHeader />
+    <CardHeader/>
 
       {/* Date of Birth Field */}
       <div className="flex flex-col">
