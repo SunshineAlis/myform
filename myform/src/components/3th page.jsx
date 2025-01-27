@@ -6,10 +6,13 @@ import { CardHeader } from "./CardHeader";
 
 export const StepThree = ({ setStep }) => {
   const [formValue, setFormValue] = useState(() => {
-    const savedData = localStorage.getItem("stepThreeForm");
-    return savedData
-      ? JSON.parse(savedData)
-      : { dateOfBirth: "", profileImage: null };
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem("stepThreeForm");
+      return savedData
+        ? JSON.parse(savedData)
+        : { dateOfBirth: "", profileImage: null };
+    }
+    return { dateOfBirth: "", profileImage: null }; // Fallback for SSR
   });
 
   const [errors, setErrors] = useState({
@@ -17,32 +20,41 @@ export const StepThree = ({ setStep }) => {
     profileImage: "",
   });
 
-  const [previewImage, setPreviewImage] = useState(() => {
-    const savedData = localStorage.getItem("stepThreeForm");
-    return savedData ? JSON.parse(savedData).previewImage : null;
-  });
+  const [previewImage, setPreviewImage] = useState(null);
+
+  // `useEffect` ашиглан `localStorage` хадгалах
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem("stepThreeForm");
+      if (savedData) {
+        setPreviewImage(JSON.parse(savedData).previewImage);
+      }
+    }
+  }, []); // On component mount
 
   useEffect(() => {
-    // Save form data and preview image to localStorage
-    localStorage.setItem(
-      "stepThreeForm",
-      JSON.stringify({ ...formValue, previewImage })
-    );
-  }, [formValue, previewImage]);
+    if (typeof window !== "undefined") {
+      // Save form value and preview image to localStorage
+      localStorage.setItem(
+        "stepThreeForm",
+        JSON.stringify({ ...formValue, previewImage })
+      );
+    }
+  }, [formValue, previewImage]); // Triggered when formValue or previewImage changes
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFormValue((prev) => ({
         ...prev,
-        profileImage: file.name, // Save file name for reference
+        profileImage: file.name, // Set the file name for profileImage
       }));
       setErrors((prev) => ({
         ...prev,
         profileImage: "",
       }));
 
-      // Set preview image
+      // Preview the image
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewImage(reader.result);
@@ -72,7 +84,7 @@ export const StepThree = ({ setStep }) => {
       return;
     }
 
-    // Proceed to the next step if no errors
+    // Proceed to the next step
     setStep(4); // Move to Step 4
   };
 
@@ -83,7 +95,7 @@ export const StepThree = ({ setStep }) => {
       transition={{ duration: 0.9 }}
       className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
     >
-    <CardHeader/>
+      <CardHeader />
 
       {/* Date of Birth Field */}
       <div className="flex flex-col">
