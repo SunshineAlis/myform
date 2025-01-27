@@ -7,17 +7,13 @@ import { StepFour } from "@/components/4th page";
 
 export default function Home() {
   const [step, setStep] = useState(1);
+
   return (
     <div>
-      {step === 1 ? <StepOne setStep={setStep} /> : <></>}
-      {step === 2 ? <stepTwo setStep={setStep} /> : <></>}
-      {step === 3 ? <StepThree setStep={setStep} /> : <></>}
-      {step === 4 ? <StepFour setStep={setStep} /> : <></>}
-
-      <StepOne />
-      <StepTwo />
-      <StepThree />
-      <StepFour />
+      {step === 1 && <StepOne setStep={setStep} />}
+      {step === 2 && <StepTwo setStep={setStep} />}
+      {step === 3 && <StepThree setStep={setStep} />}
+      {step === 4 && <StepFour setStep={setStep} />}
     </div>
   );
 }

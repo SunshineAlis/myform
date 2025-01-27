@@ -1,102 +1,161 @@
-"use client"; // Add this at the top
+"use client"; // Тайлбар, зөвхөн клиент талд ажиллах болно
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Input } from "./Input";
+import { motion } from "framer-motion";
+import { CardHeader } from "./CardHeader";
 
-import { Pine } from "../icons/Pine";
-export const StepTwo = (setStep) => {
-  const [formValue, setFormValue] = useState({
+export const StepTwo = ({ setStep }) => {
+  const initialState = {
     email: "",
     phone: "",
     password: "",
     confirmPassword: "",
+  };
+
+  // Client-side - localStorage-г ашиглах
+  const [formValue, setFormValue] = useState(() => {
+    if (typeof window !== "undefined") { // Браузер дээр ажиллаж байвал
+      const savedFormValue = localStorage.getItem("stepTwoForm");
+      return savedFormValue ? JSON.parse(savedFormValue) : initialState;
+    }
+    return initialState; // Сервер талд default утга буцаах
   });
+
   const [errors, setErrors] = useState({
     email: "",
     phone: "",
     password: "",
     confirmPassword: "",
   });
+
+  useEffect(() => {
+    // client-side дээрх localStorage-г хадгалах
+    if (typeof window !== "undefined") {
+      localStorage.setItem("stepTwoForm", JSON.stringify(formValue));
+    }
+  }, [formValue]);
+
   const validateEmail = (email) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    const re = /^[0-9]{8,12}$/; // Зөвхөн 8-12 оронтой тоо байна
+    return re.test(phone);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 8; // Password 8 тэмдэгтээс их байх ёстой
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     let hasError = false;
     const newErrors = {};
+
+    // Email validation
+    if (!validateEmail(formValue.email)) {
+      hasError = true;
+      newErrors.email = "Invalid email address";
+    }
+
+    // Phone validation
+    if (!validatePhone(formValue.phone)) {
+      hasError = true;
+      newErrors.phone = "Phone number must be 8-12 digits";
+    }
+
+    // Password valid
+    if (!validatePassword(formValue.password)) {
+      hasError = true;
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    // Confirm password 
+    if (formValue.password !== formValue.confirmPassword) {
+      hasError = true;
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Дараагийн алхам руу шилжих
+    setStep((prevStep) => prevStep + 1);
+  };
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormValue((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [id]: "",
+    }));
   };
 
   return (
-    <div className="w-[100%] w-[480px] h-[655px] flex flex-col  mt-[100px] ml-[300px] gap-[30px] bg-white border rounded-xl p-8">
-      <Pine className="w-[60px] h-[60px]" />
-      <h1 className="font-semibold text-2xl">Join Us! 😎</h1>
-      <h3 className="text-lg font-normal text-[#8E8E8E]">
-        Please provide all current information accurately.
-      </h3>
-      <div className="flex flex-col">
-        <label>
-          Email<span className="text-red">*</span>
-        </label>
-        <input
-          id=" firstName"
-          type="text"
-          placeholder="Placeholder"
-          onClick={onSubmit}
-          className="w-full border py-3 px-2 rounded-xl"
-          onChange={onFirstNameChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label>
-          Phone Number <span>*</span>
-        </label>
-        <input
-          id="lastName"
-          type="number"
-          placeholder="Placeholder"
-          className="w-full border py-3 px-2 rounded-xl"
-          onClick={onSubmit}
-          onChange={onSecondNameChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label>
-          Password<span>*</span>
-        </label>
-        <input
-          id="UserName"
-          type="text"
-          placeholder="Placeholder"
-          className="w-full border py-3 px-2 rounded-xl"
-          onClick={onSubmit}
-          onChange={onUserNameChange}
-        />
-      </div>
-      <div className="flex flex-col">
-        <label>
-          Confirm password<span>*</span>
-        </label>
-        <input
-          id="UserName"
-          type="text"
-          placeholder="Placeholder"
-          className="w-full border py-3 px-2 rounded-xl"
-          onClick={onSubmit}
-          onChange={onUserNameChange}
-        />
-      </div>
-      <div className="flex gap-[5px]">
-        <button className="w-[150px] h-[60px] mt-[70px]  mb-[50px] bg-white  border rounded-xl text-gray text-2xl rounded-2xl">
+    <motion.div
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.9 }}
+      className="w-full max-w-sm mx-auto mt-20 flex flex-col gap-6 bg-white border rounded-xl p-8 shadow-md"
+    >
+      <CardHeader />
+      <Input
+        id="email"
+        label="Email"
+        placeholder="Enter your email"
+        value={formValue.email}
+        onChange={handleChange}
+        error={errors.email}
+      />
+      <Input
+        id="phone"
+        label="Phone number"
+        placeholder="Enter your phone number"
+        value={formValue.phone}
+        onChange={handleChange}
+        error={errors.phone}
+      />
+      <Input
+        id="password"
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        value={formValue.password}
+        onChange={handleChange}
+        error={errors.password}
+      />
+      <Input
+        id="confirmPassword"
+        label=" Confirm Password"
+        type="password"
+        placeholder="Enter your password"
+        value={formValue.confirmPassword}
+        onChange={handleChange}
+        error={errors.confirmPassword}
+      />
+      <div className="flex gap-[10px]">
+        <button
+          className="w-[150px] h-[60px] bg-gray-200 border rounded-xl text-gray-700 text-xl"
+          onClick={() => setStep((prevStep) => prevStep - 1)}
+        >
           Back
         </button>
         <button
           onClick={onSubmit}
-          className="w-[302px] h-[60px] mt-[70px]  mb-[50px] bg-black text-white text-xl rounded-2xl"
+          className="w-[302px] h-[60px] bg-black text-white text-xl rounded-2xl"
         >
-          continue 2/3
+          Continue 2/3
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
